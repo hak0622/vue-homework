@@ -59,17 +59,23 @@
                   >추가</span
                 >
               </div>
+              <span>전체 todo 개수 :{{todolist.length}}</span
+              ><span>완료 todo 개수 :{{completedCount}}</span
+              ><span>미완료 todo 개수 :{{uncompletedCount}}</span>
             </div>
             <div class="row">
               <div class="col">
                 <ul class="list-group">
                   <li
-                    v-for="todoitem in todolist"
+                    v-for="todoitem in sortedList"
                     :key="todoitem.id"
                     class="list-group-item"
                     :class="{'list-group-item-success':todoitem.completed}"
-                    @click="toggleCompleted(todoitem.id)"
                   >
+                    <input
+                      type="checkbox"
+                      @click="toggleCompleted(todoitem.id)"
+                    />
                     <span
                       class="pointer"
                       :class="{'todo-done':todoitem.completed}"
@@ -113,18 +119,66 @@
               this.todolist.push({
                 id: new Date().getTime(),
                 todo: this.todo,
-                completed: false,
+                completed: false, //이거 뭐에요?
               });
-              this.todo = '';
+              this.todo = ''; //추가하고 다시 공백으로 만들기
             }
           },
           deleteTodo(id) {
-            let index = this.todolist.findIndex((item) => id === item.id);
-            this.todolist.splice(index, 1);
+            let index = this.todolist.findIndex((item) => id === item.id); //((item)=>id ===item)
+            this.todolist.splice(index, 1); //찾은 번호에서 1개를 지운다.
           },
           toggleCompleted(id) {
             let index = this.todolist.findIndex((item) => id === item.id);
-            this.todolist[index].completed = !this.todolist[index].completed;
+            this.todolist[index].completed = !this.todolist[index].completed; //index 찾아서 completed가 false
+          },
+        },
+        computed: {
+          completedCount() {
+            //완료 수
+            let count = 0;
+            for (let todo of this.todolist) {
+              if (todo.completed) {
+                count++;
+              }
+            }
+            return count;
+          },
+          uncompletedCount() {
+            //미완료 수
+            let count = 0;
+            for (let todo of this.todolist) {
+              if (todo.completed) {
+                count++;
+              }
+            }
+            return this.todolist.length - count;
+          },
+          sortedList() {
+            this.todolist.sort((t1, t2) => {
+              // true > false  -> 결과 : true
+              if (t1.completed > t2.completed) {
+                return 1; // 양수 반환 시 자리 바뀜 (t1, t2 -> t2, t1)
+              }
+
+              if (t1.completed < t2.completed) {
+                return -1; // 음수 반환 시 자리 바꿈 X
+              }
+
+              // 위 if문 실행 X === completed가 같을 경우
+              // -> 문자열 오름 차순 정렬
+
+              // 모두 소문자로 변경(대소문자 구분 X)
+              const todo1 = t1.todo.toLowerCase();
+              const todo2 = t2.todo.toLowerCase();
+
+              if (todo1 > todo2) return 1; // 자리 교체
+              else if (todo1 === todo2) return 0; // 유지
+              else return -1; // 유지
+            });
+
+            // 정렬된 todoList 반환
+            return this.todolist;
           },
         },
       }).mount('#app');
