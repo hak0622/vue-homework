@@ -9,7 +9,7 @@
       <!-- 입력용 컴포넌트
        방출 (add-todo)된 이벤트가 감지 되었을 때 
        addTodo()메서드 호출-->
-      <InputTodo @add-todo="addTodo" />
+      <CInputTodo @add-todo="addTodo" />
 
       <TodoCount v-bind:todolist="todolist" />
       <TodoList
@@ -29,7 +29,7 @@ import TodoCount from './components/TodoCount.vue';
 
 export default {
   components: {
-    InputTodo,
+    CInputTodo: InputTodo,
     TodoList,
     TodoCount,
   },
