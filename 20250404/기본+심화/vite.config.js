@@ -13,9 +13,10 @@ export default defineConfig({
     },
   },
   server: {
+    // 서버 프록시 설정
     proxy: {
       '/api': {
-        target: 'https://fakestoreapi.com',
+        target: 'http://localhost:3000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
